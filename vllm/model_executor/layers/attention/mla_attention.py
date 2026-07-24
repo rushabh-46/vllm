@@ -970,7 +970,9 @@ class MLAAttention(nn.Module, AttentionLayerBase):
         # the bmm's in 16-bit, the extra memory overhead of this is fairly low
         kv_b_proj_weight = get_and_maybe_dequant_weights(
             self.kv_b_proj, out_dtype=act_dtype
-        ).T
+        )
+        if kv_b_proj_weight.shape[0] != self.kv_lora_rank:
+            kv_b_proj_weight = kv_b_proj_weight.T
 
         if self.dcp_q_replicate:
             # qrep wired here: validate unsupported decode backends once.

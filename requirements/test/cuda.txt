@@ -1204,7 +1204,7 @@ tokenizers==0.22.2
     #   -r requirements/test/../common.txt
     #   -r requirements/test/cuda.in
     #   transformers
-torch==2.13.0+cu130
+torch==2.12.1+cu130
     # via
     #   -c requirements/cuda.txt
     #   -r requirements/test/cuda.in

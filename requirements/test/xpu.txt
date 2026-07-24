@@ -910,7 +910,7 @@ tokenizers==0.22.2
     #   -c requirements/common.txt
     #   -r requirements/test/../common.txt
     #   transformers
-torch==2.12.0+xpu
+torch==2.12.1+xpu
     # via
     #   -c requirements/xpu.txt
     #   accelerate

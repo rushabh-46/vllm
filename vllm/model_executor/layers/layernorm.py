@@ -77,21 +77,19 @@ class RMSNorm(CustomOp):
         residual: torch.Tensor | None = None,
     ) -> torch.Tensor | tuple[torch.Tensor, torch.Tensor]:
         """PyTorch-native implementation equivalent to forward()."""
-        if residual is None:
-            return ir.ops.rms_norm(
-                x,
-                self.weight.data if self.pass_weight else None,
-                self.variance_epsilon,
-                self.variance_size_override,
-            )
+        if residual is not None:
+            x = x + residual
+            residual = x
+        variance = x.pow(2).mean(-1, keepdim=True)
+        x = x * torch.rsqrt(variance + self.variance_epsilon)
+        weight = self.weight.data if self.pass_weight else None
+        if weight is not None:
+            out = weight * x
         else:
-            return ir.ops.fused_add_rms_norm.maybe_inplace(
-                x,
-                residual,
-                self.weight.data if self.pass_weight_add else None,
-                self.variance_epsilon,
-                self.variance_size_override,
-            )
+            out = x
+        if residual is not None:
+            return out, residual
+        return out
 
     def forward_cuda(
         self,
